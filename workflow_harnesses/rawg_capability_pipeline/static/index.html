@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KitUniverse RAWG Operator</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2375e0ac'/%3E%3Cpath d='M8 9h5v6l6-6h6l-8 8 8 6h-7l-5-4v4H8z' fill='%23062016'/%3E%3C/svg%3E">
+  <style>
+    :root { color-scheme: dark; --bg:#071016; --panel:#0e1a22; --line:#24333d; --text:#eef6f5; --muted:#91a6a8; --green:#75e0ac; --amber:#ffc66d; --red:#ff7b86; }
+    * { box-sizing:border-box; }
+    body { margin:0; font:15px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; background:radial-gradient(circle at 20% 0,#102830 0,var(--bg) 40%); color:var(--text); }
+    main { width:min(1180px,calc(100% - 32px)); margin:0 auto; padding:28px 0 56px; }
+    header { display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:22px; }
+    h1 { margin:0; font:700 clamp(26px,4vw,44px)/1.05 system-ui,sans-serif; letter-spacing:-.04em; }
+    .eyebrow { color:var(--green); font-size:12px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+    .status { border:1px solid var(--line); background:#0a151b; padding:9px 12px; border-radius:999px; color:var(--muted); white-space:nowrap; }
+    .status strong { color:var(--green); }
+    .hero { background:linear-gradient(145deg,#10222c,#0a151b); border:1px solid var(--line); border-radius:18px; padding:20px; box-shadow:0 16px 50px #0006; }
+    .controls { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+    button { border:1px solid #35515e; background:#152832; color:var(--text); padding:12px 17px; border-radius:10px; font:inherit; cursor:pointer; }
+    button:hover { border-color:var(--green); transform:translateY(-1px); }
+    button.primary { background:var(--green); border-color:var(--green); color:#062016; font-weight:800; }
+    button.danger { color:var(--red); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(135px,1fr)); gap:10px; }
+    .metric { min-height:92px; border:1px solid var(--line); background:#09141a; border-radius:12px; padding:13px; }
+    .metric span { display:block; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+    .metric strong { display:block; margin-top:8px; font:700 25px/1 system-ui,sans-serif; overflow:hidden; text-overflow:ellipsis; }
+    .progress { height:8px; margin:18px 0 7px; background:#061015; border-radius:99px; overflow:hidden; }
+    .progress div { height:100%; width:0; background:linear-gradient(90deg,var(--green),#54bdf0); transition:width .4s; }
+    .caption { display:flex; justify-content:space-between; gap:20px; color:var(--muted); font-size:12px; }
+    details { margin-top:16px; border:1px solid var(--line); background:var(--panel); border-radius:14px; padding:14px 16px; }
+    summary { cursor:pointer; font-weight:700; }
+    form { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
+    label { color:var(--muted); font-size:12px; }
+    input { width:100%; margin-top:5px; border:1px solid var(--line); background:#071116; color:var(--text); padding:10px; border-radius:8px; font:inherit; }
+    pre { max-height:280px; overflow:auto; white-space:pre-wrap; color:#bcd1d1; font-size:12px; }
+    .error { color:var(--red); }
+    @media(max-width:850px){ .grid{grid-template-columns:repeat(2,1fr)} form{grid-template-columns:1fr} header{align-items:start;flex-direction:column} }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div><div class="eyebrow">Nexus Engine / Live source processing</div><h1>RAWG → KitUniverse</h1></div>
+    <div class="status">Worker: <strong id="workerStatus">Loading…</strong></div>
+  </header>
+  <section class="hero">
+    <div class="controls">
+      <button class="primary" data-action="start">Start</button>
+      <button data-action="pause">Pause</button>
+      <button data-action="resume">Resume</button>
+      <button data-action="drain">Drain safely</button>
+      <button class="danger" data-action="stop">Stop</button>
+    </div>
+    <div class="grid">
+      <div class="metric"><span>Sources processed</span><strong id="processed">0</strong></div>
+      <div class="metric"><span>Evidence clusters</span><strong id="clusters">0</strong></div>
+      <div class="metric"><span>Engine gaps</span><strong id="gaps">0</strong></div>
+      <div class="metric"><span>Candidate kits</span><strong id="candidates">0</strong></div>
+      <div class="metric"><span>Promotions</span><strong id="promotions">0</strong></div>
+      <div class="metric"><span>Insufficient</span><strong id="insufficient">0</strong></div>
+      <div class="metric"><span>Failures</span><strong id="failures">0</strong></div>
+      <div class="metric"><span>Free disk</span><strong id="disk">—</strong></div>
+    </div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="caption"><span id="cursor">Waiting for a run.</span><span id="eta">ETA —</span></div>
+  </section>
+  <details>
+    <summary>Advanced run settings</summary>
+    <form id="settings">
+      <label>Source folder<input name="source_root"></label>
+      <label>LM Studio URL<input name="base_url"></label>
+      <label>Model<input name="model"></label>
+      <label>Context length<input name="context_length" type="number"></label>
+      <label>Parallel predictions<input name="parallel" type="number"></label>
+      <label>Source batch size<input name="batch_size" type="number"></label>
+      <label>Maximum records (0 = all)<input name="max_records" type="number"></label>
+      <label>Use local LFM<input name="use_model" type="checkbox"></label>
+      <label>Auto-promote to KitUniverse<input name="auto_promote" type="checkbox"></label>
+    </form>
+  </details>
+  <details>
+    <summary>Recent evidence and worker events</summary>
+    <pre id="events">No events yet.</pre>
+  </details>
+  <p id="error" class="error"></p>
+</main>
+<script>
+const total=881069, fields=['source_root','base_url','model','context_length','parallel','batch_size','max_records','use_model','auto_promote'];
+let configured=false;
+function number(v){ return new Intl.NumberFormat().format(Number(v||0)); }
+function duration(seconds){ if(!seconds) return '—'; const h=Math.floor(seconds/3600),m=Math.floor((seconds%3600)/60); return h?`${h}h ${m}m`:`${m}m`; }
+async function status(){
+  try{
+    const s=await fetch('/api/status').then(r=>r.json());
+    document.querySelector('#workerStatus').textContent=s.status|| (s.process_running?'running':'idle');
+    document.querySelector('#processed').textContent=number(s.processed_sources);
+    document.querySelector('#clusters').textContent=number(s.evidence_clusters);
+    document.querySelector('#gaps').textContent=number(s.engine_gaps);
+    document.querySelector('#candidates').textContent=number(s.candidate_kits);
+    document.querySelector('#promotions').textContent=number(s.promoted_kits);
+    document.querySelector('#insufficient').textContent=number(s.insufficient_sources);
+    document.querySelector('#failures').textContent=number(s.failed_sources);
+    document.querySelector('#disk').textContent=`${Number(s.free_gib||0).toFixed(1)} GiB`;
+    document.querySelector('#progressBar').style.width=`${Math.min(100,(Number(s.processed_sources||0)/total)*100)}%`;
+    document.querySelector('#cursor').textContent=s.current_file?`${s.current_file} · line ${number(s.current_line)} · ${Number(s.throughput_per_second||0).toFixed(2)}/s`:'Waiting for a run.';
+    document.querySelector('#eta').textContent=`ETA ${duration(s.estimated_seconds_remaining)}`;
+    if(!configured){ for(const key of fields){ const el=document.querySelector(`[name=${key}]`); if(el&&s.config?.[key]!==undefined){ if(el.type==='checkbox')el.checked=Boolean(s.config[key]); else el.value=s.config[key]; } } configured=true; }
+    document.querySelector('#error').textContent=s.hold_reason?`Held: ${s.hold_reason}`:'';
+  }catch(e){ document.querySelector('#error').textContent=`Operator unavailable: ${e.message}`; }
+}
+async function events(){ const data=await fetch('/api/events').then(r=>r.json()); document.querySelector('#events').textContent=(data.events||[]).slice(-25).map(e=>`${e.timestamp}  ${e.action}  ${JSON.stringify(e.data)}`).join('\n')||'No events yet.'; }
+async function action(name){
+  const body={};
+  if(name==='start'){ body.config={}; for(const key of fields){ const el=document.querySelector(`[name=${key}]`); body.config[key]=el.type==='checkbox'?el.checked:(el.type==='number'?Number(el.value):el.value); } }
+  const response=await fetch(`/api/${name}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const data=await response.json(); if(!data.ok) document.querySelector('#error').textContent=data.error||'Action failed'; await status();
+}
+document.querySelectorAll('button[data-action]').forEach(button=>button.addEventListener('click',()=>action(button.dataset.action)));
+status();events();setInterval(status,2000);setInterval(events,4000);
+</script>
+</body>
+</html>

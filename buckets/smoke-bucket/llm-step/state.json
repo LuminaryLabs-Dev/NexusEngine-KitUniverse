@@ -1,0 +1,5 @@
+{
+  "enabled": false,
+  "mode": "auto-pass",
+  "note": "LLM gate is intentionally empty for now."
+}

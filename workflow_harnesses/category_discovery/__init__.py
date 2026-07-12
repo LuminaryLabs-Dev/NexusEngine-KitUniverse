@@ -1,0 +1,1 @@
+"""Category discovery workflow harness."""

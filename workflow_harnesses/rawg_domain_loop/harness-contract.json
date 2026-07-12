@@ -1,0 +1,27 @@
+{
+  "schema_version": "workflow-harness-contract.v1",
+  "name": "rawg-domain-loop",
+  "pattern": ["indexed-state", "artifact-passing", "tool-validated"],
+  "input": "one normalized RAWG record",
+  "stages": [
+    "mechanical-sentence-tag-select",
+    "mechanical-fact-extract",
+    "deterministic-fact-ground",
+    "focused-fact-review",
+    "fact-to-capability-seed",
+    "domain-type-select",
+    "high-temperature-act",
+    "deterministic-evidence-gate",
+    "low-temperature-self-review",
+    "state-append",
+    "codex-final-review"
+  ],
+  "outputs": [
+    "loop-state.json",
+    "accepted-candidates.json",
+    "codex-approved-candidates.json",
+    "report.json"
+  ],
+  "automatic_write_boundary": "run workspace only",
+  "production_promotion": false
+}

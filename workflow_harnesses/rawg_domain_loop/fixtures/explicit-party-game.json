@@ -1,0 +1,17 @@
+{
+  "id": "explicit-party-game",
+  "name": "Explicit Party Game Fixture",
+  "description": "Two to four players take turns rolling dice and moving a token across connected board spaces. Landing on a space can add or remove coins, grant an item, or start a four-player minigame. Players spend coins to buy stars from a star space. Items can modify a dice roll or move a player to another board space. After a configured number of turns, the player with the most stars wins; coins break tied star totals. The same match supports local multiplayer and online multiplayer.",
+  "genres": ["Party", "Board Game"],
+  "tags": [
+    "Turn-Based",
+    "Dice Rolling",
+    "Board Navigation",
+    "Coins",
+    "Items",
+    "Minigames",
+    "Local Multiplayer",
+    "Online Multiplayer"
+  ],
+  "platforms": ["PC"]
+}

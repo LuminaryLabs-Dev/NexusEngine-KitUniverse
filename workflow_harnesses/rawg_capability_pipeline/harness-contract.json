@@ -1,0 +1,39 @@
+{
+  "schema_version": "workflow-harness-contract.v1",
+  "name": "rawg-capability-pipeline",
+  "input": {
+    "dataset": "rawg-881069",
+    "format": "177 external JSONL chunks",
+    "streaming": true
+  },
+  "stages": [
+    "rawg-stream",
+    "metadata-normalize",
+    "evidence-fingerprint-group",
+    "novel-mechanic-extract",
+    "capability-cluster",
+    "nexus-inventory-compare",
+    "engine-gap-rank",
+    "kit-build-request",
+    "codex-cluster-review",
+    "kituniverse-batch-gates"
+  ],
+  "records": [
+    "rawg.source.v1",
+    "mechanic.evidence.v1",
+    "capability.cluster.v1",
+    "engine.gap.v1",
+    "kit.build-request.v1"
+  ],
+  "holds": [
+    "low-disk-space",
+    "provider-preflight-failed",
+    "provider-load-config-mismatch",
+    "codex-cluster-review-failed",
+    "simulator-failed"
+  ],
+  "write_boundaries": {
+    "automatic": ["workspace", "kituniverse"],
+    "approval_required": ["nexusengine-protokits", "nexusengine"]
+  }
+}

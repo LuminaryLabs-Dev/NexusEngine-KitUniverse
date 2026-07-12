@@ -1,0 +1,4 @@
+{"id":"fixture-racer","slug":"fixture-racer","name":"Fixture Racer","description":"Players race through timed checkpoints and manage vehicle momentum.","genres":["Racing"],"tags":["Singleplayer"],"platforms":["PC"],"sourceUrl":"https://rawg.io/games/fixture-racer"}
+{"id":"fixture-empty","slug":"fixture-empty","name":"Fixture Empty","description":"","genres":[],"tags":[],"platforms":["PC"]}
+{"id":"fixture-racer-deluxe","slug":"fixture-racer-deluxe","name":"Fixture Racer Deluxe Edition","description":"Players race through timed checkpoints and manage vehicle momentum.","genres":["Racing"],"tags":["Singleplayer"],"platforms":["Console"]}
+{"id":"fixture-malformed",

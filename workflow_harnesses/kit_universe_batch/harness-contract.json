@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "harness-it.contract.v2",
+  "name": "kit-universe-batch",
+  "goal": "Promote an exact requested count of unique, simulator-proven KitUniverse contracts.",
+  "authorityClass": "orchestrator",
+  "layers": ["workflow", "stage", "chain"],
+  "actors": [
+    {
+      "id": "lfm350-generator",
+      "kind": "model",
+      "authority": "draft-only",
+      "allowedActions": ["draft-kit-slots", "repair-draft"]
+    },
+    {
+      "id": "nexus-simulator",
+      "kind": "adapter",
+      "authority": "validation-only",
+      "allowedActions": ["simulate-contract"]
+    },
+    {
+      "id": "sol-batch-reviewer",
+      "kind": "model",
+      "authority": "review-only",
+      "allowedActions": ["accept-candidate", "reject-candidate"]
+    },
+    {
+      "id": "batch-ledger",
+      "kind": "deterministic",
+      "authority": "promotion-only",
+      "allowedActions": ["prepare-transaction", "commit-transaction", "quarantine"]
+    }
+  ],
+  "inputs": [
+    {"id": "source", "schema": "inline:kit-source.v1"},
+    {"id": "count", "schema": "inline:positive-integer"}
+  ],
+  "outputs": [
+    {"id": "promoted-kits", "schema": "inline:guided-kit-jsonl.v1", "lifecycle": "promoted"},
+    {"id": "run-evidence", "schema": "inline:batch-run.v1", "lifecycle": "validated"}
+  ],
+  "states": ["initialized", "generating", "generated", "validated", "simulated", "reviewed", "prepared", "promoted", "retry", "hold", "rejected", "complete"],
+  "gates": [
+    {"id": "fresh-validation", "owner": "batch-validator", "onPass": "validated", "onFail": "retry"},
+    {"id": "duplicate-filter", "owner": "batch-ledger", "onPass": "validated", "onFail": "rejected"},
+    {"id": "nexus-simulator", "owner": "nexus-simulator", "onPass": "simulated", "onFail": "rejected"},
+    {"id": "sol-review", "owner": "sol-batch-reviewer", "onPass": "reviewed", "onFail": "hold"},
+    {"id": "journaled-promotion", "owner": "batch-ledger", "onPass": "promoted", "onFail": "hold"}
+  ],
+  "retryPolicy": {
+    "maxAttempts": 4,
+    "timeoutMs": 900000,
+    "mutationPolicy": "transaction-required",
+    "onExhausted": "hold"
+  },
+  "memoryPolicy": {
+    "runState": "runs/workflow-harnesses/kit-universe-batch/{runId}/checkpoint.json",
+    "carryForward": ["source-matrix", "captured-drafts", "validated-decisions", "simulator-proof", "sol-review", "transaction-id"],
+    "discard": ["provider-hidden-state", "uncaptured-model-state"]
+  },
+  "artifacts": {
+    "runRoot": "runs/workflow-harnesses/kit-universe-batch/{runId}",
+    "manifest": "manifest.json",
+    "events": "events.jsonl",
+    "decisions": "decisions/",
+    "validationReport": "validation-report.json",
+    "finalReport": "final-report.json"
+  },
+  "provider": {
+    "required": true,
+    "profile": "LM Studio lfm2.5-350m-heretic-high-reasoning-i1",
+    "liveProofRequired": true
+  },
+  "approvals": [],
+  "promotion": {
+    "owner": "batch-ledger",
+    "requires": ["fresh-validation", "duplicate-filter", "nexus-simulator", "sol-review", "journaled-promotion"]
+  },
+  "tests": {
+    "smoke": "Run count one through the same batch path.",
+    "happy": "Promote the exact requested count with per-kit evidence.",
+    "failure": "Quarantine malformed, duplicate, simulator-rejected, and Sol-rejected candidates.",
+    "retry": "Use bounded model repair and replacement generation without advancing failed counts.",
+    "resume": "Resume from checkpoint without repeating captured generation or committed promotion.",
+    "artifactInspection": "Reconstruct every batch decision from manifest, events, batch folders, and journal entries."
+  }
+}

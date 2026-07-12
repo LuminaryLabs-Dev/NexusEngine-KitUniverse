@@ -1,0 +1,8 @@
+.codex/
+.DS_Store
+__pycache__/
+*.pyc
+runs/
+output/playwright/
+.playwright-cli/
+.playwright-mcp/

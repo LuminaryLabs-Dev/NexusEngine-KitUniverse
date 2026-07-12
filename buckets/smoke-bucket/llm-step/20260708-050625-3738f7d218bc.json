@@ -1,0 +1,8 @@
+{
+  "enabled": false,
+  "mode": "auto-pass",
+  "ok": true,
+  "reason": "LLM gate not implemented; auto-pass placeholder.",
+  "step": "llm",
+  "submission_id": "20260708-050625-3738f7d218bc"
+}

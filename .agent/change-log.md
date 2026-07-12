@@ -1,0 +1,109 @@
+# Change Log
+
+Status: active
+
+## Entries
+
+- 2026-07-08 03:57:55 America/New_York - Created repo memory, repo goal, and required `.agent/` workspace files for the single-entry sub-harness setup.
+- 2026-07-08 03:58:30 America/New_York - Recorded live `10.0.0.38:1234` high-reasoning chat probe behavior and output-shape validation need.
+- 2026-07-08 04:10:00 America/New_York - Added `ask_provider`, LM Studio provider adapter, and `chain-ask-for-domain-list` three-step chain harness.
+- 2026-07-08 04:16:00 America/New_York - Recorded validation lesson: strict domain-list chain failed on `lfm2.5-350m-heretic-high-reasoning` but passed on `lfm2.5-8b-a1b`.
+- 2026-07-08 04:25:00 America/New_York - Added Chainstormer workflow harness folder and looped JSON-list recording contract.
+- 2026-07-08 05:04:12 America/New_York - Validated Chainstormer with a 2-loop smoke run against `10.0.0.137` and recorded the proof artifact paths.
+- 2026-07-08 05:05:16 America/New_York - Added folder-backed bucket service with intake, heuristic duplicate rejection, placeholder LLM auto-pass step, and final submission ledger.
+- 2026-07-08 05:06:29 America/New_York - Validated bucket service by accepting one smoke submission and rejecting a normalized duplicate at the heuristic stage.
+- 2026-07-08 05:07:49 America/New_York - Ran Chainstormer for 100 game-idea loops and recorded the repetition/state-collapse lesson.
+- 2026-07-08 05:10:00 America/New_York - Updated Chainstormer to compact tangent prompt state with `--idea-type` and `--reply-length`.
+- 2026-07-08 05:13:05 America/New_York - Validated compact tangent Chainstormer with 100 game-idea loops; uniqueness improved to 92 outputs with some topic drift remaining.
+- 2026-07-08 05:17:00 America/New_York - Updated Chainstormer to make two calls per loop: tangent thought and detached coherent idea translation.
+- 2026-07-08 05:17:22 America/New_York - Validated two-call Chainstormer with 100 loops and 200 model calls; idea uniqueness reached 98 with late topic drift remaining.
+- 2026-07-08 05:25:00 America/New_York - Added DSK domain translator workflow with idea translation, subdomain breadth, and recursive depth controls.
+- 2026-07-08 05:26:00 America/New_York - Validated DSK domain translator with depth 2 and subdomain breadth 2, producing 7 unique domain nodes in 13 model calls.
+- 2026-07-08 06:57:00 America/New_York - Fixed DSK translator run-id collisions and compared breadth 3 versus 10, confirming current subdomain quality is not good enough for scale.
+- 2026-07-08 07:00:50 America/New_York - Tightened DSK translator prompts only, removed ambiguous kebab-case wording, and confirmed root-like children still require gates beyond prompt changes.
+- 2026-07-08 07:09:00 America/New_York - Added DSK translator reject/repair/fallback acceptance and validated 50 requested subdomains with 51 unique domain records.
+- 2026-07-08 07:17:25 America/New_York - Ran Mario-like platformer DSK translator with subdomains 5 and depth 4, producing 781 unique fallback-backed domain records.
+- 2026-07-08 07:38:21 America/New_York - Switched DSK translator to `10.0.0.38` heretic model and added gameplay evidence matrix coverage, validating 50 unique surface/axis child domains.
+- 2026-07-08 13:32:12 America/New_York - Added domain discovery workflow harness for looping game domain discovery on `10.0.0.137` `lfm2.5-1.2b-instruct` and validated a 4-game benchmark.
+- 2026-07-08 13:37:35 America/New_York - Added subdomain discovery workflow harness with ledger-backed parent traversal and validated a Mario Party smoke run.
+- 2026-07-08 20:51:17 America/New_York - Added flat category discovery workflow harness and validated a Mario Party category smoke run.
+- 2026-07-08 22:17:09 America/New_York - Added sharded JSONL ingestion service and validated 256 concurrent stress writes.
+- 2026-07-08 22:27:41 America/New_York - Added MatrixNodeExplorer-Harness with chained generation, semantic Y/N judging, smart routing, and sharded JSONL output.
+- 2026-07-08 22:31:00 America/New_York - Updated MatrixNodeExplorer-Harness with `LIST GOAL` conversion, 4-8 step variable chains, and artifact-preserving exploration proof.
+- 2026-07-08 22:47:27 America/New_York - Loosened MatrixNodeExplorer first-stage acceptance to expand aggressively and reject only obvious waste before later filter/merge stages.
+- 2026-07-08 22:54:43 America/New_York - Updated MatrixNodeExplorer first-stage prompts, conversion fallback, relevance gate wording, and proof notes for the expansive acceptance policy.
+- 2026-07-08 23:01:55 America/New_York - Added FractalKitPipeline, generated 10,000 final kit JSONL records, wrote final bucket shards, and validated simulator plus Playwright slot smokes.
+- 2026-07-08 23:12:51 America/New_York - Updated FractalKitPipeline first-stage expansion to reject only obvious waste, write `expansion-report.json`, and validated the policy with simulator plus Playwright smokes.
+- 2026-07-08 23:17:15 America/New_York - Added FractalKitPipeline recursive domain merge review, generated a 10,000-record run with domain groups, and validated simulator plus Playwright replay.
+- 2026-07-08 23:21:38 America/New_York - Extracted FractalKitPipeline kit merge review into its own stage module and validated a 10,000-record run plus Playwright replay.
+- 2026-07-08 23:27:42 America/New_York - Extracted FractalKitPipeline expansion and reveal/reduce stages into their own modules and validated a 10,000-record run plus Playwright replay.
+- 2026-07-08 23:33:37 America/New_York - Extracted FractalKitPipeline idea matrix and atomic filter stages into their own modules and validated a 10,000-record run plus Playwright replay.
+- 2026-07-08 23:38:30 America/New_York - Extracted FractalKitPipeline run artifact helpers into their own module and validated a 10,000-record run plus Playwright replay.
+- 2026-07-08 23:41:18 America/New_York - Locked FractalKitPipeline first-stage prompt stance to broad expansion, exact-repeat avoidance, rough connected idea preservation, and later filter/merge/reduce/map cleanup; validated with a 64-record smoke run plus Playwright replay.
+- 2026-07-08 23:47:30 America/New_York - Extracted FractalKitPipeline final output handling into `final_output_stage.py` and validated a 10,000-record run plus Playwright replay.
+- 2026-07-08 23:52:46 America/New_York - Extracted FractalKitPipeline setup handling into `setup_stage.py` and validated a 10,000-record run plus Playwright replay.
+- 2026-07-08 23:58:07 America/New_York - Extracted FractalKitPipeline high-to-low model temperature policy into `temperature_schedule.py` and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 00:03:56 America/New_York - Added FractalKitPipeline domain canonicalization feed-forward stage and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 00:09:36 America/New_York - Added FractalKitPipeline kit canonicalization feed-forward stage and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 00:15:02 America/New_York - Added FractalKitPipeline final quality gate stage and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 00:20:13 America/New_York - Added FractalKitPipeline explicit stage contracts artifact and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 00:23:38 America/New_York - Fixed FractalKitPipeline first-stage parsing so comma/newline output expands to candidates while a single rough phrase stays intact; validated with compile, parser smoke, and a 64-record workflow run.
+- 2026-07-09 00:24:39 America/New_York - Revalidated the first-stage parser refinement at 10k scale with 10,000 final records, clean bucket ingestion, and 64/64 Playwright replay acceptance.
+- 2026-07-09 00:32:39 America/New_York - Added FractalKitPipeline `stage_ledger_stage.py`, wrote `stage-ledger.json` from final output, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 00:38:10 America/New_York - Added FractalKitPipeline `objective_audit_stage.py`, wrote `objective-audit.json`, and validated a 10,000-record run with `completion_ready=true` plus Playwright replay.
+- 2026-07-09 00:45:39 America/New_York - Added FractalKitPipeline `diversity_audit_stage.py`, required `diversity-audit.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 00:51:21 America/New_York - Added FractalKitPipeline `dependency_graph_audit_stage.py`, required `dependency-graph-audit.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 00:56:35 America/New_York - Added FractalKitPipeline `build_batch_manifest_stage.py`, required `build-batches.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 01:02:26 America/New_York - Added FractalKitPipeline `build_batch_replay_smoke_stage.py`, required `build-batch-replay-smoke.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 01:07:45 America/New_York - Added FractalKitPipeline `build_work_order_stage.py`, required `build-work-orders.jsonl`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 01:16:00 America/New_York - Tightened FractalKitPipeline first-stage expansive prompt contract with explicit `DO NOT POLISH` and `reject_only` report metadata.
+- 2026-07-09 01:20:00 America/New_York - Added FractalKitPipeline `build_batch_packet_stage.py`, required materialized `build-inputs/<batch-id>/` packets, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 01:25:00 America/New_York - Added FractalKitPipeline `build_batch_dry_run_stage.py`, required isolated `batch-results/<batch-id>/build-report.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 01:30:00 America/New_York - Added FractalKitPipeline `build_promotion_index_stage.py`, required `build-promotion-index.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 01:35:00 America/New_York - Added FractalKitPipeline `promoted_batch_stage.py`, required `promoted-batches/<batch-id>/promotion-report.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 01:40:00 America/New_York - Added FractalKitPipeline `handoff_manifest_stage.py`, required `handoff-manifest.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 01:50:00 America/New_York - Added FractalKitPipeline `source_shape_audit_stage.py`, required `source-shape-audit.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:00:00 America/New_York - Added FractalKitPipeline `final_bucket_reconciliation_stage.py`, required `final-bucket-reconciliation.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:05:00 America/New_York - Persisted FractalKitPipeline `idea-matrix.jsonl` before atomic filtering and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:10:00 America/New_York - Persisted FractalKitPipeline `filtered-candidates.jsonl` before domain merge review and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:15:00 America/New_York - Persisted FractalKitPipeline `selected-final-records.jsonl` before final quality gates and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:20:00 America/New_York - Added FractalKitPipeline `feed_forward_artifact_integrity_stage.py`, required `feed-forward-artifact-integrity.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:21:00 America/New_York - Revalidated FractalKitPipeline first-stage aggressive expansion policy with a 32-record smoke run plus Playwright replay.
+- 2026-07-09 02:25:00 America/New_York - Added FractalKitPipeline `stage_contract_integrity_stage.py`, required `stage-contract-integrity.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:32:00 America/New_York - Added FractalKitPipeline `final_lineage_integrity_stage.py`, required `final-lineage-integrity.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:38:00 America/New_York - Added FractalKitPipeline `merge_review_coverage_stage.py`, required `merge-review-coverage.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:45:00 America/New_York - Added FractalKitPipeline `prompt_control_indirection_stage.py`, required `prompt-control-indirection.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:51:00 America/New_York - Added FractalKitPipeline `slot_decision_trace_integrity_stage.py`, required `slot-decision-trace-integrity.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 02:53:14 America/New_York - Updated MatrixNodeExplorer first-stage prompt, Y/N relevance gate, parser, report metadata, and docs to enforce aggressive expansion with only obvious-waste rejection.
+- 2026-07-09 03:04:39 America/New_York - Added FractalKitPipeline `downstream_build_chain_integrity_stage.py`, blocked first-stage direct target-term leakage before relevance prompts, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 03:12:19 America/New_York - Added FractalKitPipeline `stage_resume_plan_stage.py`, required `stage-resume-plan.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 03:23:00 America/New_York - Locked FractalKitPipeline first expansion reports to the broad keep/reject rule and documented the filter/merge/reduce/map cleanup boundary.
+- 2026-07-09 03:30:45 America/New_York - Added FractalKitPipeline `first_stage_breadth_audit_stage.py`, required `first-stage-breadth-audit.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 03:40:49 America/New_York - Added FractalKitPipeline `revealed_reduced_audit_stage.py`, rejected generic reduced filler, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 03:48:59 America/New_York - Added FractalKitPipeline `idea_matrix_audit_stage.py`, required `idea-matrix-audit.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 03:57:43 America/New_York - Added FractalKitPipeline `atomic_filter_audit_stage.py`, required `atomic-filter-audit.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 04:11:49 America/New_York - Added FractalKitPipeline `domain_merge_input_audit_stage.py`, required `domain-merge-input-audit.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 04:19:12 America/New_York - Added FractalKitPipeline `domain_canonicalization_audit_stage.py`, required `domain-canonicalization-audit.json`, and validated a 10,000-record run plus Playwright replay.
+- 2026-07-09 16:00:00 America/New_York - Added GuidedKitBuilder with slot provenance, structured 350M drafting, validation/repair, exact-token link injection, and a passing single-active-call 10-kit benchmark.
+- 2026-07-09 17:01:29 America/New_York - Added one-shot KitUniverse turns, cumulative 1,000-kit progress, LM Studio generation, Codex CLI medium review/self-correction, and committed turn 1 after fixing namespace and review-order failures.
+- 2026-07-09 17:23:25 America/New_York - Ran turn 2, exposed generic semantic slots despite structural acceptance, tightened the quality gate, and made bare `kituniverse --idea` automatically run a reviewed universe turn.
+- 2026-07-09 17:47:04 America/New_York - Replaced the obsolete `gpt-5.4` reviewer with ChatGPT-bundled Codex CLI `0.144.0-alpha.4`, `gpt-5.6-sol`, and medium reasoning; verified the exact model live.
+- 2026-07-09 18:19:00 America/New_York - Added bounded semantic-repair delays, deterministic domain/interface/reset fallbacks, placeholder rejection, fresh-process post-Sol validation, and promotion-aware ledger reconciliation; quarantined 3 raw records with 0/1,000 promotion-ready.
+- 2026-07-09 18:28:59 America/New_York - Repeated the damage-cooldown turn, proved fresh Sol-era rejection for incomplete snapshots and misspelled state, then added snapshot union, source-backed correction, role separation, concrete plans, and behavior-specific test gates; quarantined 4 raw records with 0/1,000 promotion-ready.
+- 2026-07-09 18:34:59 America/New_York - Repeated the damage-cooldown turn, demoted a formally passing but semantically misaligned record, then added source-derived inputs, generic domain rejection, input-derived requirements, and output-aligned provisions; quarantined 5 raw records with 0/1,000 promotion-ready.
+- 2026-07-09 18:45:11 America/New_York - Repeated the damage-cooldown turn, rejected operational-term leakage and invented implementation behavior, then added cross-field semantic correction, exact snapshot ownership, weak invariant rejection, and deterministic trusted plans; quarantined 6 raw records with 0/1,000 promotion-ready.
+- 2026-07-09 18:49:44 America/New_York - Repeated the damage-cooldown turn, validated fresh ledger-module reload, rejected incomplete model-authored tests, and added deterministic full-contract test coverage; quarantined 7 raw records with 0/1,000 promotion-ready.
+- 2026-07-09 18:54:31 America/New_York - Repeated the damage-cooldown turn, rejected metadata-only state and missing idempotency ownership, then derived applied-key state with matching reset and snapshot contracts; quarantined 8 raw records with 0/1,000 promotion-ready.
+- 2026-07-09 18:58:27 America/New_York - Promoted the first fully reviewed damage-cooldown kit after one 350M call, Sol review, fresh validation, manual semantic audit, complete state ownership, deterministic plans, and full contract tests; progress is 1/1,000 with 8 quarantined raw records.
+- 2026-07-09 19:05:47 America/New_York - Promoted the health damage ledger after a rejected three-attempt output mismatch and authoritative output repair; progress is 2/1,000 with the first validated `damage-cooldown:accepted-damage` link.
+- 2026-07-09 19:09:30 America/New_York - Promoted the defeat-state gate and linked it through `health:defeated`; progress is 3/1,000 with two validated links, while raw-model semantic contribution is now the next reporting focus.
+- 2026-07-09 19:16:11 America/New_York - Added raw-model semantic contribution reporting, promoted the respawn eligibility gate after all-state reset repair, and linked it through `entity:defeated`; progress is 4/1,000 with three validated links.
+- 2026-07-09 19:23:56 America/New_York - Preserved a rejected respawn-schedule attempt, fixed shared event-suffix parsing, replayed the same idea, and promoted one validated queue kit linked through `respawn:scheduled`; progress is 5/1,000 with four validated links.
+- 2026-07-09 19:32:50 America/New_York - Proved immutable duplicate rejection, preserved two rejected respawn-activation attempts, added model-contribution and prompt-leakage gates, then promoted one 30-check activation request kit linked through `respawn:due`; progress is 6/1,000 with five validated links.
+- 2026-07-09 19:36:25 America/New_York - Added cumulative connection-quality reporting and promoted one spawn-point reservation kit linked through `spawn:requested` after one 350M call, Sol review, and 30 fresh checks; progress is 7/1,000 with six validated links.
+- 2026-07-09 19:38:45 America/New_York - Added scoped token/latency reporting, preserved a three-attempt spawn-placement rejection plus Sol usage-limit evidence, and removed failed-draft anchoring from zero-contribution repair; progress remains 7/1,000 pending replay of the same idea.
+- 2026-07-10 03:47:00 America/New_York - Added the parameterized KitUniverse batch harness, real NexusSimulator contract-proof gate, fresh validation, Sol batch review, four-signature duplicate checks, checkpoint/resume, and journaled subset promotion; production proof promoted 50/50 from 104 attempts and advanced cumulative progress to 58/1,000.
+- 2026-07-10 04:01:37 America/New_York - Hardened batch pickup behavior so run IDs and run-directory paths both resume, simulator command failures hold without consuming replacement loops, and CLI documentation matches the review-skip flag.
+- 2026-07-11 04:12:00 America/New_York - Added the live RAWG streaming capability pipeline, local browser operator, epoch-safe drain/restart, provenance-backed build requests, live engine inventory, Codex cluster review, disk/provider holds, and runtime-proof bridge; validated all 881,069 source rows, four-way LFM concurrency, 50,001-record endurance, resume/shard compression, and human-view controls.
+- 2026-07-11 05:14:00 America/New_York - Added the bounded RAWG domain act-review loop with eight exploration types, high-temperature generation, deterministic evidence/duplicate gates, typed low-temperature self-review, durable per-pass state, optional Codex final review, and success tied to Codex-approved candidates; explicit mechanics passed 2/2 while real promotional RAWG text correctly failed at 0 approved.
+- 2026-07-11 21:48:00 America/New_York - Reworked the domain loop into a mechanical-evidence micro-chain with deterministic sentence/tag selection, structured fact extraction, source-ID grounding, focused per-fact review, fact-to-capability seeds, label-only model contracts, and Codex final gating; the real Baldur's Gate III run passed with 4 Codex-approved capabilities from 21 local calls.
