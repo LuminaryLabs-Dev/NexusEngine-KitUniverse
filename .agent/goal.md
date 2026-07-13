@@ -4,20 +4,25 @@ Status: active
 
 ## Purpose
 
-Implement the first simple chained harness through an `ask_provider` boundary.
+Turn the complete RAWG corpus into an exhaustively decomposed, evidence-backed master inventory containing thousands of genuinely novel, built, and runtime-validated reusable kits. The active implementation is pointer-driven, epoch-aware, fail-forward, and runs directly from the editable KitUniverse checkout.
 
-The active extension is the live RAWG-to-KitUniverse worker and operator, with
-complete provenance, resumable code epochs, contract proof, and selected
-implementation runtime proof.
+## Exhaustive RAWG Goal
+
+- Decompose all 881,069 source records without representative-only sampling.
+- Persist the complete game-to-kit, domain/subdomain, DSK, temporal, merge, and proof package for every record.
+- Maintain one append-only master kit inventory with every source observation attached.
+- Use LFM 350M at up to 64 active predictions for grounded breadth and LFM 1.2B at up to eight for contract refinement.
+- Build every genuinely novel master kit and require existing contract, duplicate, NexusSimulator, review, and transaction proof before counting it.
+- Do not declare completion for scans, clusters, proposals, or queued build requests.
 
 ## Success Criteria
 
-- `.agent/` workspace is present and readable.
-- `10.0.0.38` endpoint availability is checked live.
-- `ask_provider` exists as the provider boundary.
-- `lm_studio` provider targets `http://10.0.0.38:1234/v1` and `lfm2.5-350m-heretic-high-reasoning`.
-- `chain-ask-for-domain-list` runs three chained asks and writes artifacts.
-- Live validation proves the chain returns a final domain list.
+- Exactly 881,069 unique sources reconcile through evidence and compact pointer maps with zero malformed, skipped, duplicate, or untraceable records.
+- Every supported per-game mechanic/domain/category/platform seed expands through defensible versioned facet profiles; unknown metadata remains evidence-only and never pads engine-kit counts.
+- LM Studio uses `10.0.0.137:1234/v1`, with up to 64 `lfm2.5-350m` extraction lanes and eight `lfm2.5-1.2b-instruct` refinement lanes.
+- Protected evidence fails forward from LFM rejection into batched Codex entailment, repair, novelty, and inventory review.
+- Every Codex-accepted novel master is implemented and passes NexusSimulator `kit.runtime-proof`; only those runtime-proven packages count toward the thousands-of-kits result.
+- All stages checkpoint, record code epochs, preserve prior artifacts, and hold below 10 GiB free.
 
 ## Proof
 

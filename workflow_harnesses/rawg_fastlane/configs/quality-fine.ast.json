@@ -1,0 +1,21 @@
+{
+  "schema_version": "kituniverse.workflow-ast.v1",
+  "workflow_id": "rawg-quality-fine-v1",
+  "controls": {
+    "source_root": "/Users/crimsonwheeler/Documents/GitHub/NexusRealtime-Ideas/games/rawg/chunks",
+    "workspace": "runs/rawg-881k/quality-fine",
+    "base_url": "http://10.0.0.137:1234/v1",
+    "task_concurrency": 16,
+    "model_prediction_limits": {"lfm2.5-1.2b-instruct": 8, "lfm2.5-350m": 8},
+    "max_context_tokens": 2000,
+    "timeout_seconds": 45,
+    "shard_max_bytes": 90000000
+  },
+  "nodes": [
+    {"id": "scan", "op": "rawg.scan-group", "config": {"fingerprint_profile": "fine", "max_records": 0}},
+    {"id": "expand", "op": "lfm.expand-representatives", "enabled": false, "config": {"profile_id": "12b-seed-12b-walk-lean-beam2-d2", "max_representatives": 32}},
+    {"id": "review", "op": "codex.review-recall", "enabled": false, "goal": "Maximize evidence-preserving mechanic coverage with bounded local-model and Codex calls.", "permissions": {"repo_edits": false, "shell_mutation": false}, "loop": {"max_passes": 3, "stop_score": 0.92}},
+    {"id": "report", "op": "workflow.report"}
+  ],
+  "edges": [{"from": "scan", "to": "expand"}, {"from": "expand", "to": "review"}, {"from": "review", "to": "report"}]
+}
