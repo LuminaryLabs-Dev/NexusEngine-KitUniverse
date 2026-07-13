@@ -23,6 +23,10 @@ python3 -m kituniverse_harness.cli batch --resume <run-id>
 python3 -m kituniverse_harness.cli serve --workspace runs/rawg-881k/live --open
 python3 -m kituniverse_harness.cli rawg-process --workspace runs/rawg-881k/shadow --max-records 1000
 python3 -m kituniverse_harness.cli domain-loop --game-id baldurs-gate-iii --max-passes 8 --codex-review
+
+python3 -m kituniverse_harness.cli rawg-chainstorm --game-id baldurs-gate-iii --rounds 3 --time-budget-seconds 10
+
+python3 -m kituniverse_harness.cli rawg-matrix-optimize --sample-games 4 --max-depth 2 --parallel-per-model 8 --context-per-slot 2000 --shard-max-mb 90
 python3 -m kituniverse_harness.cli runtime-proof --manifest /path/to/runtime-proof-manifest.json
 python3 -m kituniverse_harness.buckets intake ideas --content "first final submission"
 python3 -m kituniverse_harness.ingestion stress --records 256 --concurrency 256 --shards 256

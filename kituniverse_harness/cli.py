@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 import sys
 from pathlib import Path
@@ -36,6 +37,18 @@ def main(argv: Optional[list[str]] = None) -> int:
         return _run_rawg_process(args)
     if args.command == "domain-loop":
         return _run_domain_loop(args)
+    if args.command == "rawg-chainstorm":
+        return _run_rawg_chainstorm(args)
+    if args.command == "rawg-matrix-optimize":
+        return _run_rawg_matrix_optimizer(args)
+    if args.command == "rawg-matrix-run":
+        return _run_rawg_matrix_production(args)
+    if args.command == "rawg-matrix-cluster":
+        return _run_rawg_matrix_clustering(args)
+    if args.command == "rawg-fastlane":
+        return _run_rawg_fastlane(args)
+    if args.command == "rawg-exhaustive":
+        return _run_rawg_exhaustive(args)
     if args.command == "serve":
         return _run_operator(args)
     if args.command == "runtime-proof":
@@ -92,6 +105,38 @@ def _build_main_parser() -> argparse.ArgumentParser:
     )
 
     configure_domain_loop_parser(domain_loop_parser)
+    chainstorm_parser = subcommands.add_parser("rawg-chainstorm")
+    from workflow_harnesses.rawg_chainstorm.workflow_rawg_chainstorm import (
+        configure_parser as configure_rawg_chainstorm_parser,
+    )
+
+    configure_rawg_chainstorm_parser(chainstorm_parser)
+    matrix_parser = subcommands.add_parser("rawg-matrix-optimize")
+    from workflow_harnesses.rawg_matrix_optimizer.workflow_rawg_matrix_optimizer import (
+        configure_parser as configure_rawg_matrix_optimizer_parser,
+    )
+
+    configure_rawg_matrix_optimizer_parser(matrix_parser)
+    matrix_run_parser = subcommands.add_parser("rawg-matrix-run")
+    from workflow_harnesses.rawg_matrix_optimizer.production import (
+        configure_parser as configure_rawg_matrix_production_parser,
+    )
+
+    configure_rawg_matrix_production_parser(matrix_run_parser)
+    matrix_cluster_parser = subcommands.add_parser("rawg-matrix-cluster")
+    from workflow_harnesses.rawg_matrix_optimizer.clustering import (
+        configure_parser as configure_rawg_matrix_clustering_parser,
+    )
+
+    configure_rawg_matrix_clustering_parser(matrix_cluster_parser)
+    fastlane_parser = subcommands.add_parser("rawg-fastlane")
+    from workflow_harnesses.rawg_fastlane.workflow import configure_parser as configure_rawg_fastlane_parser
+
+    configure_rawg_fastlane_parser(fastlane_parser)
+    exhaustive_parser = subcommands.add_parser("rawg-exhaustive")
+    from workflow_harnesses.rawg_exhaustive.workflow import configure_parser as configure_rawg_exhaustive_parser
+
+    configure_rawg_exhaustive_parser(exhaustive_parser)
     serve_parser = subcommands.add_parser("serve")
     serve_parser.add_argument("--workspace", type=Path, default=Path("runs/rawg-881k/default"))
     serve_parser.add_argument("--host", default="127.0.0.1")
@@ -138,7 +183,7 @@ def _build_guided_parser(prog: str) -> argparse.ArgumentParser:
 def _looks_like_guided_hero_command(argv: list[str]) -> bool:
     if not argv:
         return False
-    known_commands = {"ask-provider", "chain-ask-for-domain-list", "guided-kit-builder", "batch", "rawg-process", "domain-loop", "serve", "runtime-proof"}
+    known_commands = {"ask-provider", "chain-ask-for-domain-list", "guided-kit-builder", "batch", "rawg-process", "domain-loop", "rawg-chainstorm", "rawg-matrix-optimize", "rawg-matrix-run", "rawg-matrix-cluster", "rawg-fastlane", "rawg-exhaustive", "serve", "runtime-proof"}
     if argv[0] in known_commands:
         return False
     hero_flags = {
@@ -159,7 +204,7 @@ def _looks_like_guided_hero_command(argv: list[str]) -> bool:
 
 
 def _looks_like_batch_hero_command(argv: list[str]) -> bool:
-    if not argv or argv[0] in {"ask-provider", "chain-ask-for-domain-list", "guided-kit-builder", "batch", "rawg-process", "domain-loop", "serve", "runtime-proof"}:
+    if not argv or argv[0] in {"ask-provider", "chain-ask-for-domain-list", "guided-kit-builder", "batch", "rawg-process", "domain-loop", "rawg-chainstorm", "rawg-matrix-optimize", "rawg-matrix-run", "rawg-matrix-cluster", "rawg-fastlane", "rawg-exhaustive", "serve", "runtime-proof"}:
         return False
     flags = {argument.split("=", 1)[0] for argument in argv if argument.startswith("--")}
     guided_only = {
@@ -293,6 +338,54 @@ def _run_domain_loop(args: argparse.Namespace) -> int:
     from workflow_harnesses.rawg_domain_loop.workflow_rawg_domain_loop import run_from_namespace
 
     return run_from_namespace(args)
+
+
+def _run_rawg_chainstorm(args: argparse.Namespace) -> int:
+    from workflow_harnesses.rawg_chainstorm.workflow_rawg_chainstorm import run_chainstorm
+
+    report = run_chainstorm(args)
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report.get("ok") else 1
+
+
+def _run_rawg_matrix_optimizer(args: argparse.Namespace) -> int:
+    from workflow_harnesses.rawg_matrix_optimizer.workflow_rawg_matrix_optimizer import run_optimizer
+
+    report = asyncio.run(run_optimizer(args))
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report.get("ok") else 1
+
+
+def _run_rawg_matrix_production(args: argparse.Namespace) -> int:
+    from workflow_harnesses.rawg_matrix_optimizer.production import run_production
+
+    report = asyncio.run(run_production(args))
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report.get("status") in {"limit-complete", "complete"} else 1
+
+
+def _run_rawg_matrix_clustering(args: argparse.Namespace) -> int:
+    from workflow_harnesses.rawg_matrix_optimizer.clustering import run_clustering
+
+    report = run_clustering(args)
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report.get("ok") else 1
+
+
+def _run_rawg_fastlane(args: argparse.Namespace) -> int:
+    from workflow_harnesses.rawg_fastlane.workflow import run_workflow
+
+    report = asyncio.run(run_workflow(args))
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report.get("ok") else 1
+
+
+def _run_rawg_exhaustive(args: argparse.Namespace) -> int:
+    from workflow_harnesses.rawg_exhaustive.workflow import run_workflow
+
+    report = asyncio.run(run_workflow(args))
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report.get("ok") else 1
 
 
 def _run_operator(args: argparse.Namespace) -> int:

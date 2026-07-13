@@ -1,0 +1,52 @@
+{
+  "schema_version": "kituniverse.workflow-ast.v1",
+  "workflow_id": "rawg-adaptive-revalidate-propose-v1",
+  "controls": {
+    "source_root": "/Users/crimsonwheeler/Documents/GitHub/NexusRealtime-Ideas/games/rawg/chunks",
+    "workspace": "runs/rawg-881k/fast-support-first-production",
+    "base_url": "http://10.0.0.137:1234/v1",
+    "task_concurrency": 64,
+    "model_prediction_limits": {"lfm2.5-1.2b-instruct": 8, "lfm2.5-350m": 64},
+    "max_context_tokens": 2000,
+    "timeout_seconds": 45,
+    "shard_max_bytes": 90000000,
+    "min_free_gib": 10.0,
+    "promotion_enabled": false
+  },
+  "nodes": [
+    {
+      "id": "expand-strata",
+      "op": "group.expand-representatives",
+      "config": {
+        "default_cap": 12,
+        "caps": [
+          {"min_group_size": 50000, "cap": 128},
+          {"min_group_size": 10000, "cap": 64},
+          {"min_group_size": 2000, "cap": 32}
+        ]
+      }
+    },
+    {
+      "id": "pipeline",
+      "op": "workflow.support-first-pipeline",
+      "config": {
+        "swarm_batch": 512,
+        "refine_batch": 256,
+        "max_iterations": 30,
+        "swarm": {"model": "lfm2.5-350m", "temperature": 1.2, "beam_width": 4, "context_tokens": 512, "max_tokens": 64, "allow_reconfigure": true},
+        "merge": {"min_support": 2, "singleton_recall": 32},
+        "refine": {"model": "lfm2.5-1.2b-instruct", "temperature": 0.7, "max_tokens": 96, "min_support": 2, "include_singleton_recall": true, "singleton_quota": 16, "full_corpus_cap": 10000, "novelty_metrics": false}
+      }
+    },
+    {"id": "revalidate", "op": "filter.revalidate-atomic", "config": {"max_candidates": 100}},
+    {
+      "id": "propose",
+      "op": "codex.propose-kits",
+      "config": {"max_candidates": 50},
+      "permissions": {"repo_edits": false, "shell_mutation": false},
+      "loop": {"max_passes": 1, "stop_score": 1.0}
+    },
+    {"id": "report", "op": "workflow.report"}
+  ],
+  "edges": [{"from": "expand-strata", "to": "pipeline"}, {"from": "pipeline", "to": "revalidate"}, {"from": "revalidate", "to": "propose"}, {"from": "propose", "to": "report"}]
+}
