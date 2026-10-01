@@ -136,12 +136,25 @@ class LMStudioProvider:
             **loaded,
         }
 
+    def unload(self, instance_id: str) -> Dict[str, Any]:
+        """Unload one exact native API model instance."""
+        try:
+            unloaded = self._request_url(
+                "POST",
+                f"{self.server_url}/api/v1/models/unload",
+                {"instance_id": instance_id},
+            )
+        except Exception as exc:  # noqa: BLE001 - normalize native API failures.
+            return {"ok": False, "instance_id": instance_id, "error": str(exc)}
+        return {"ok": unloaded.get("instance_id") == instance_id, **unloaded}
+
     def chat(
         self,
         messages: List[Dict[str, str]],
         temperature: float = 0.1,
         max_tokens: int = 1600,
         response_format: Optional[Dict[str, Any]] = None,
+        reasoning_effort: Optional[str] = None,
     ) -> ProviderResponse:
         payload = {
             "model": self.model,
@@ -151,6 +164,8 @@ class LMStudioProvider:
         }
         if response_format is not None:
             payload["response_format"] = response_format
+        if reasoning_effort is not None:
+            payload["reasoning_effort"] = reasoning_effort
         try:
             raw = self._request("POST", "/chat/completions", payload)
         except Exception as exc:  # noqa: BLE001 - normalize provider failures.

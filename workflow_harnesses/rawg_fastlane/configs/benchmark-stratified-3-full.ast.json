@@ -1,0 +1,35 @@
+{
+  "schema_version": "kituniverse.workflow-ast.v1",
+  "workflow_id": "rawg-benchmark-stratified-3-full-v1",
+  "controls": {
+    "source_root": "/Users/crimsonwheeler/Documents/GitHub/NexusRealtime-Ideas/games/rawg/chunks",
+    "workspace": "runs/rawg-fastlane/benchmark-stratified-3-full",
+    "base_url": "http://10.0.0.137:1234/v1",
+    "task_concurrency": 64,
+    "model_prediction_limits": {"lfm2.5-1.2b-instruct": 8, "lfm2.5-350m": 64},
+    "max_context_tokens": 2000,
+    "timeout_seconds": 45,
+    "shard_max_bytes": 90000000
+  },
+  "nodes": [
+    {"id": "scan", "op": "rawg.scan-group", "config": {"fingerprint_profile": "stratified", "max_representatives_per_group": 3, "max_records": 20000}},
+    {"id": "swarm", "op": "lfm.swarm-ideas", "config": {"model": "lfm2.5-350m", "temperature": 1.2, "beam_width": 4, "context_tokens": 512, "max_tokens": 64, "max_representatives": 256, "allow_reconfigure": true}},
+    {"id": "refine", "op": "lfm.refine-swarm", "config": {"model": "lfm2.5-1.2b-instruct", "temperature": 0.7, "max_tokens": 96, "max_results": 256}},
+    {
+      "id": "review",
+      "op": "codex.review-recall",
+      "goal": "Decide whether three secondary evidence strata per coarse group plus a behavior-gated 64-lane 350M swarm and atomic 1.2B refinement preserve enough novelty for a six-hour RAWG pass.",
+      "recall_paths": [
+        "goal.md",
+        "memory.md",
+        "workflow_harnesses/rawg_fastlane/README.md",
+        "workflow_harnesses/rawg_matrix_optimizer/VALIDATION.md",
+        "runs/workflow-harnesses/rawg-matrix-optimizer/20260712-023830-383/report.json"
+      ],
+      "permissions": {"repo_edits": false, "shell_mutation": false},
+      "loop": {"max_passes": 2, "stop_score": 0.9}
+    },
+    {"id": "report", "op": "workflow.report"}
+  ],
+  "edges": [{"from": "scan", "to": "swarm"}, {"from": "swarm", "to": "refine"}, {"from": "refine", "to": "review"}, {"from": "review", "to": "report"}]
+}

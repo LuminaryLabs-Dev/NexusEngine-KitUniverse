@@ -1,0 +1,21 @@
+{
+  "schema_version": "kituniverse.workflow-ast.v1",
+  "workflow_id": "rawg-swarm-coarse-350m-64-v1",
+  "controls": {
+    "source_root": "/Users/crimsonwheeler/Documents/GitHub/NexusRealtime-Ideas/games/rawg/chunks",
+    "workspace": "runs/rawg-fastlane/benchmark-coarse-20k",
+    "base_url": "http://10.0.0.137:1234/v1",
+    "task_concurrency": 64,
+    "model_prediction_limits": {"lfm2.5-1.2b-instruct": 8, "lfm2.5-350m": 64},
+    "max_context_tokens": 2000,
+    "timeout_seconds": 45,
+    "shard_max_bytes": 90000000
+  },
+  "nodes": [
+    {"id": "scan", "op": "rawg.scan-group", "enabled": false, "config": {"fingerprint_profile": "coarse"}},
+    {"id": "swarm", "op": "lfm.swarm-ideas", "config": {"model": "lfm2.5-350m", "temperature": 1.2, "beam_width": 4, "context_tokens": 512, "max_tokens": 64, "max_representatives": 256, "allow_reconfigure": true}},
+    {"id": "review", "op": "codex.review-recall", "enabled": false, "goal": "Measure whether a 64-lane 350M swarm supplies diverse grounded ideas without becoming the quality authority.", "permissions": {"repo_edits": false, "shell_mutation": false}, "loop": {"max_passes": 2, "stop_score": 0.9}},
+    {"id": "report", "op": "workflow.report"}
+  ],
+  "edges": [{"from": "scan", "to": "swarm"}, {"from": "swarm", "to": "review"}, {"from": "review", "to": "report"}]
+}

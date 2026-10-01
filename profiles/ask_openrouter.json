@@ -1,0 +1,53 @@
+{
+  "schema_version": "kituniverse.openrouter-profile.v1",
+  "profile_id": "ask_openrouter",
+  "provider": "openrouter",
+  "environment": {
+    "api_key": "OPENROUTER_API_KEY",
+    "base_url": "OPENROUTER_BASE_URL",
+    "model": "OPENROUTER_MODEL"
+  },
+  "defaults": {
+    "base_url": "https://openrouter.ai/api/v1",
+    "model": "tencent/hy3",
+    "fallback_models": [
+      "tencent/hy3:free"
+    ],
+    "system": "Answer directly, follow the requested output shape, and do not expose hidden reasoning.",
+    "temperature": 0.7,
+    "max_tokens": 1024,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "reliability": {
+    "attempts_per_model": 3,
+    "backoff_seconds": [
+      0.5,
+      1.0,
+      2.0
+    ],
+    "retry_http_statuses": [
+      408,
+      409,
+      425,
+      429,
+      500,
+      502,
+      503,
+      504
+    ],
+    "fallback_on": [
+      "key_limit_exceeded",
+      "payment_required",
+      "rate_limited",
+      "provider_unavailable",
+      "empty_response"
+    ],
+    "timeout_seconds": 90,
+    "max_tokens_ceiling": 8192
+  },
+  "request_headers": {
+    "X-Title": "NexusEngine KitUniverse"
+  }
+}

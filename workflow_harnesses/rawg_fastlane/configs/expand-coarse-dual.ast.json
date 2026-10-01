@@ -1,0 +1,21 @@
+{
+  "schema_version": "kituniverse.workflow-ast.v1",
+  "workflow_id": "rawg-expand-coarse-dual-v1",
+  "controls": {
+    "source_root": "/Users/crimsonwheeler/Documents/GitHub/NexusRealtime-Ideas/games/rawg/chunks",
+    "workspace": "runs/rawg-fastlane/benchmark-coarse-20k",
+    "base_url": "http://10.0.0.137:1234/v1",
+    "task_concurrency": 16,
+    "model_prediction_limits": {"lfm2.5-1.2b-instruct": 8, "lfm2.5-350m": 8},
+    "max_context_tokens": 2000,
+    "timeout_seconds": 45,
+    "shard_max_bytes": 90000000
+  },
+  "nodes": [
+    {"id": "scan", "op": "rawg.scan-group", "enabled": false, "config": {"fingerprint_profile": "coarse"}},
+    {"id": "expand", "op": "lfm.expand-representatives", "config": {"profile_ids": ["12b-seed-12b-walk-lean-beam2-d2", "350m-seed-350m-walk"], "max_representatives": 64}},
+    {"id": "review", "op": "codex.review-recall", "enabled": false, "goal": "Compare dual-model representative expansion quality and speed.", "permissions": {"repo_edits": false, "shell_mutation": false}, "loop": {"max_passes": 2, "stop_score": 0.9}},
+    {"id": "report", "op": "workflow.report"}
+  ],
+  "edges": [{"from": "scan", "to": "expand"}, {"from": "expand", "to": "review"}, {"from": "review", "to": "report"}]
+}
