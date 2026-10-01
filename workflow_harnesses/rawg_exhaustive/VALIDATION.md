@@ -34,6 +34,18 @@
 - Production promotion is disabled.
 - Source and derived ledgers are append-only and resumable; JSONL shards cap at 90,000,000 bytes and processing holds below 10 GiB free.
 
+## Kit and domain architecture proof
+
+- `runs/rawg-881k/exhaustive-domain-architecture-smoke/` reuses the authoritative race-selection acceptance fixture.
+- The implementation was authored in staging, passed all 23 NexusSimulator runtime checks, and moved into `kits/n-race-selection-kit/`; zero failures entered the built-kit tree.
+- Its immutable membership is `domains/character-identity/race-selection/n-race-selection-kit.json`.
+- The final audit reconciled one Codex acceptance, one build request, one runtime-proven package, one domain, and one subdomain with zero errors.
+- A second execution produced zero new builds and one existing placement, proving idempotent resume. A direct catch-all fixture proved `mechanics` fails the final-domain gate.
+- Production now inserts `codex.author-runtime-kits` before runtime proof and requires capability-specific module behavior plus positive, rejection, duplicate, query/state, snapshot/load, and reset tests. The generic apply template remains available only to bounded fixtures.
+- The first Codex-authoring smoke held before any Codex call or package write because free disk was 9.76 GiB. This is an unresolved safety blocker, not authoring proof; validation must resume after approved storage cleanup or workspace relocation.
+- Approved cleanup preserved 8,685 compact historical artifacts with SHA-256 inventory and zero missing/mismatched hashes, removed 15,489,181,392 bytes of repeated ignored payloads, and restored 23.9 GiB free.
+- `runs/rawg-881k/exhaustive-codex-author-smoke/` is the completed capability-authoring proof. Codex generated a non-template race-selection implementation and four contract tests covering eligible commit, ineligible rejection, replacement, duplicate replay, query, snapshot/load equivalence, and reset. NexusSimulator passed 24/24 checks; one kit, domain, and subdomain reconciled with zero architecture errors.
+
 ## Full production evidence
 
 - `runs/rawg-881k/exhaustive-production/` reconciles exactly 881,069 unique source-ledger identities, source hashes, evidence-map IDs, and game/domain-kit-map IDs, with matching lineage sets and zero malformed JSONL.

@@ -14,8 +14,12 @@ ALLOWED_OPERATIONS = {
     "master.merge-observations",
     "lfm.refine-master-kits",
     "codex.review-master-kits",
+    "codex.organize-domains",
     "kit.enqueue-builds",
+    "codex.author-runtime-kits",
     "kit.build-runtime-prove",
+    "kit.place-domain-architecture",
+    "kit.audit-domain-architecture",
     "workflow.report",
 }
 
@@ -46,6 +50,16 @@ def validate_ast(value: Dict[str, Any]) -> None:
         raise ValueError("workflow nodes need unique ids")
     if any(node.get("op") not in ALLOWED_OPERATIONS for node in nodes):
         raise ValueError("workflow contains unsupported operation")
+    for node in nodes:
+        if not str(node.get("op") or "").startswith("codex."):
+            continue
+        config = node.get("config") or {}
+        if not str(config.get("model") or "").strip():
+            raise ValueError(f"{node['id']} requires a Codex model")
+        if str(config.get("reasoning_effort") or "") not in {"low", "medium", "high", "xhigh"}:
+            raise ValueError(f"{node['id']} has invalid Codex reasoning_effort")
+        if not 1 <= int(config.get("max_concurrency") or 0) <= 16:
+            raise ValueError(f"{node['id']} Codex max_concurrency must be between 1 and 16")
     _ordered_ids(value)
 
 

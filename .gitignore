@@ -6,3 +6,4 @@ runs/
 output/playwright/
 .playwright-cli/
 .playwright-mcp/
+.env.openrouter.local

@@ -13,6 +13,17 @@ GAME_MAP_SCHEMA = "game.domain-kit-map.v1"
 MASTER_KIT_SCHEMA = "kituniverse.master-kit.v1"
 REFINED_KIT_SCHEMA = "kituniverse.refined-kit.v1"
 BUILD_REQUEST_SCHEMA = "kit.build-request.v2"
+KIT_DESCRIPTOR_SCHEMA_V1 = "kituniverse.kit-descriptor.v1"
+KIT_DESCRIPTOR_SCHEMA = "kituniverse.kit-descriptor.v2"
+SUPPORTED_KIT_DESCRIPTOR_SCHEMAS = {KIT_DESCRIPTOR_SCHEMA_V1, KIT_DESCRIPTOR_SCHEMA}
+KIT_ROLES = {"atomic", "policy", "adapter", "assembly", "app"}
+PROMOTION_TIERS = {"core", "protokit-candidate", "application"}
+KIT_VISIBILITIES = {"public", "internal", "editor-safe"}
+DOMAIN_DESCRIPTOR_SCHEMA = "kituniverse.domain-descriptor.v1"
+SUBDOMAIN_DESCRIPTOR_SCHEMA = "kituniverse.subdomain-descriptor.v1"
+DOMAIN_MEMBERSHIP_SCHEMA = "kituniverse.domain-membership.v1"
+DOMAIN_ARCHITECTURE_REPORT_SCHEMA = "kituniverse.domain-architecture-report.v1"
+KIT_AUTHORING_SCHEMA = "kituniverse.codex-kit-authoring.v1"
 
 
 INTERACTION_FIELDS = (
@@ -27,6 +38,45 @@ INTERACTION_FIELDS = (
     "cancellation",
     "resulting_state",
 )
+
+
+def validate_kit_descriptor(value: Dict[str, Any], allow_legacy: bool = True) -> List[str]:
+    errors: List[str] = []
+    schema = value.get("schema_version")
+    if schema == KIT_DESCRIPTOR_SCHEMA_V1 and allow_legacy:
+        return errors
+    if schema != KIT_DESCRIPTOR_SCHEMA:
+        return ["invalid-kit-descriptor-schema"]
+    for key in ("kit_id", "domain", "subdomain", "domain_path", "promotion_tier", "kit_role", "visibility"):
+        if not isinstance(value.get(key), str) or not value[key].strip():
+            errors.append(f"missing-{key.replace('_', '-')}")
+    if value.get("kit_role") not in KIT_ROLES:
+        errors.append("invalid-kit-role")
+    if value.get("promotion_tier") not in PROMOTION_TIERS:
+        errors.append("invalid-promotion-tier")
+    if value.get("visibility") not in KIT_VISIBILITIES:
+        errors.append("invalid-kit-visibility")
+    for key in ("child_kit_ids", "core_kits_reused", "requires", "provides"):
+        items = value.get(key)
+        if not isinstance(items, list) or any(not isinstance(item, str) or not item.strip() for item in items):
+            errors.append(f"invalid-{key.replace('_', '-')}")
+        elif len(items) != len(set(items)):
+            errors.append(f"duplicate-{key.replace('_', '-')}")
+    parent = value.get("parent_kit_id")
+    if parent is not None and (not isinstance(parent, str) or not parent.strip()):
+        errors.append("invalid-parent-kit-id")
+    children = value.get("child_kit_ids") if isinstance(value.get("child_kit_ids"), list) else []
+    if value.get("kit_role") == "assembly":
+        proof = value.get("child_idempotency_proof")
+        if not children:
+            errors.append("assembly-without-child-kits")
+        if not isinstance(proof, dict) or proof.get("status") != "passing":
+            errors.append("assembly-child-idempotency-unproven")
+    elif children:
+        errors.append("non-assembly-with-child-kits")
+    if value.get("kit_role") == "app" and value.get("promotion_tier") != "application":
+        errors.append("app-kit-outside-application-tier")
+    return errors
 
 
 def semantic_key(interaction: Dict[str, Any]) -> str:

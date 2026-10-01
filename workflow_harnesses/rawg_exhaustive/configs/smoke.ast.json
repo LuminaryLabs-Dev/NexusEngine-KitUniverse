@@ -22,9 +22,13 @@
     {"id": "decompose", "op": "kit.expand-pointer-decomposition", "config": {}},
     {"id": "merge", "op": "master.merge-observations"},
     {"id": "refine", "op": "lfm.refine-master-kits", "config": {"model": "lfm2.5-1.2b-instruct", "temperature": 0.2, "context_tokens": 2000, "max_tokens": 320, "retries": 1, "max_master_kits": 32}},
-    {"id": "review", "op": "codex.review-master-kits", "config": {"batch_size": 8, "max_batches": 1, "timeout_seconds": 900}},
+    {"id": "review", "op": "codex.review-master-kits", "config": {"model": "gpt-5.6-luna", "reasoning_effort": "low", "max_concurrency": 1, "batch_size": 8, "max_batches": 1, "retries": 1, "timeout_seconds": 900}},
+    {"id": "organize-domains", "op": "codex.organize-domains", "config": {"model": "gpt-5.6-luna", "reasoning_effort": "low", "max_concurrency": 1, "batch_size": 8, "max_batches": 1, "retries": 1, "timeout_seconds": 900}},
     {"id": "enqueue", "op": "kit.enqueue-builds"},
-    {"id": "build", "op": "kit.build-runtime-prove", "config": {"max_builds": 4, "timeout_seconds": 300}},
+    {"id": "author", "op": "codex.author-runtime-kits", "config": {"model": "gpt-5.6-luna", "reasoning_effort": "low", "max_concurrency": 1, "max_authors": 4, "retries": 1, "timeout_seconds": 1200}},
+    {"id": "build", "op": "kit.build-runtime-prove", "config": {"max_builds": 4, "timeout_seconds": 300, "require_codex_authored": true}},
+    {"id": "place-domains", "op": "kit.place-domain-architecture"},
+    {"id": "audit-domains", "op": "kit.audit-domain-architecture"},
     {"id": "report", "op": "workflow.report"}
   ],
   "edges": [
@@ -33,8 +37,12 @@
     {"from": "decompose", "to": "merge"},
     {"from": "merge", "to": "refine"},
     {"from": "refine", "to": "review"},
-    {"from": "review", "to": "enqueue"},
-    {"from": "enqueue", "to": "build"},
-    {"from": "build", "to": "report"}
+    {"from": "review", "to": "organize-domains"},
+    {"from": "organize-domains", "to": "enqueue"},
+    {"from": "enqueue", "to": "author"},
+    {"from": "author", "to": "build"},
+    {"from": "build", "to": "place-domains"},
+    {"from": "place-domains", "to": "audit-domains"},
+    {"from": "audit-domains", "to": "report"}
   ]
 }

@@ -10,7 +10,7 @@ The current session is setting up NexusEngine-KitUniverse as an agent-oriented h
 
 - The user wants `agent-it` and `harness-it` applied.
 - The desired harness direction is one simple entry point that can invoke sub-harnesses.
-- The active local-model target is `10.0.0.137:1234/v1`: `lfm2.5-350m` supplies up to 64 grounded extraction lanes and `lfm2.5-1.2b-instruct` supplies up to eight skeptical refinement lanes.
+- The completed evidence lane remains at `10.0.0.137:1234/v1`; downstream Codex review and authoring use `gpt-5.6-luna` with low reasoning and at most 16 concurrent lanes.
 - Keep responses short and action-oriented.
 - Build guided kit contracts from full descriptions while preserving slot provenance, enforcing atomic boundaries, and keeping the 350M workflow to one active model call.
 - Grow KitUniverse to 1,000 promotion-ready kits through one parameterized batch loop; keep each kit independently validated, simulated, reviewed, deduplicated, and transactionally promoted.

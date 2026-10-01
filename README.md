@@ -6,6 +6,8 @@ Simple chained harnesses for local-model domain work.
 
 ```bash
 python3 -m kituniverse_harness.cli ask-provider --health "Return {\"ok\": true}"
+python3 -m kituniverse_harness.cli ask-openrouter --health
+python3 -m kituniverse_harness.cli ask-openrouter --text "Tell me one short joke"
 python3 -m kituniverse_harness.cli chain-ask-for-domain-list
 python3 -m kituniverse_harness.cli chain-ask-for-domain-list --model lfm2.5-8b-a1b
 python3 workflow_harnesses/chainstormer/workflow_chainstormer.py --loops 100
@@ -31,6 +33,13 @@ python3 -m kituniverse_harness.cli runtime-proof --manifest /path/to/runtime-pro
 python3 -m kituniverse_harness.buckets intake ideas --content "first final submission"
 python3 -m kituniverse_harness.ingestion stress --records 256 --concurrency 256 --shards 256
 ```
+
+`ask-openrouter` loads the ignored mode-0600 `.env.openrouter.local` file and
+the versioned `profiles/ask_openrouter.json` profile. It prefers
+`OPENROUTER_MODEL`, uses explicit no-thinking mode, retries transient failures,
+and records any fallback. The current profile falls back from `tencent/hy3` to
+`tencent/hy3:free` only after a recognized quota or provider failure; secrets
+are never stored in the profile or printed by the command.
 
 ## Live RAWG capability processing
 
@@ -111,6 +120,18 @@ Latest guided benchmark:
 - result: 10/10 kits accepted, 7 exact-token links, 10 model calls, 0 repairs
 - integrity: 0 malformed records, 1 peak active prediction, 1.0 minimum coverage
 - attribution: every final slot records its intake, model, or contract source
+
+## Kit Organization
+
+Audit a built-kit workspace without moving or rewriting anything:
+
+```bash
+kituniverse kit-organize --dry-run --workspace runs/rawg-881k/exhaustive-domain-architecture-smoke
+```
+
+The report classifies each kit by domain, subdomain, role (`atomic`, `policy`, `adapter`, `assembly`, or `app`), and promotion tier (`core`, `protokit-candidate`, or `application`). It also verifies provenance, idempotency, snapshot/reset contracts, runtime proof, exact membership, and declared parent/child composition. Reports are written under `runs/kit-organize/`; dry-run mutation count is always zero.
+
+New production and fixture builds emit `kituniverse.kit-descriptor.v2` with explicit `kit_role`, `promotion_tier`, visibility, canonical domain paths, parent/child kit IDs, core-kit reuse, capability dependencies, and child-idempotency proof. Historical v1 descriptors remain readable and are never rewritten automatically.
 
 The hero `kituniverse --idea` form maps to the parameterized batch workflow with
 `--count 1`. The explicit `batch` command accepts any positive count and repeats

@@ -27,8 +27,16 @@ def main(argv: Optional[list[str]] = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "ask-provider":
         return _run_ask_provider(args)
+    if args.command == "ask-openrouter":
+        return _run_ask_openrouter(args)
     if args.command == "chain-ask-for-domain-list":
         return _run_chain(args)
+    if args.command == "gemma-chain":
+        return _run_gemma_chain(args)
+    if args.command == "ask-codex-luna":
+        return _run_ask_codex_luna(args)
+    if args.command == "kit-organize":
+        return _run_kit_organize(args)
     if args.command == "guided-kit-builder":
         return _run_guided(args)
     if args.command == "batch":
@@ -63,6 +71,12 @@ def ask_provider_main(argv: Optional[list[str]] = None) -> int:
     return _run_ask_provider(parser.parse_args(argv))
 
 
+def ask_openrouter_main(argv: Optional[list[str]] = None) -> int:
+    parser = argparse.ArgumentParser(prog="ask-openrouter")
+    _add_ask_openrouter_args(parser)
+    return _run_ask_openrouter(parser.parse_args(argv))
+
+
 def chain_ask_for_domain_list_main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(prog="chain-ask-for-domain-list")
     _add_chain_args(parser)
@@ -82,7 +96,22 @@ def _build_main_parser() -> argparse.ArgumentParser:
     )
     subcommands = parser.add_subparsers(dest="command")
     _add_ask_provider_args(subcommands.add_parser("ask-provider"))
+    _add_ask_openrouter_args(subcommands.add_parser("ask-openrouter"))
     _add_chain_args(subcommands.add_parser("chain-ask-for-domain-list"))
+    gemma_chain_parser = subcommands.add_parser("gemma-chain")
+    from workflow_harnesses.gemma.chain_harness.workflow import configure_parser as configure_gemma_chain_parser
+
+    configure_gemma_chain_parser(gemma_chain_parser)
+    codex_luna_parser = subcommands.add_parser("ask-codex-luna")
+    from workflow_harnesses.gemma.chain_harness.codex_endpoint import (
+        configure_parser as configure_codex_luna_parser,
+    )
+
+    configure_codex_luna_parser(codex_luna_parser)
+    kit_organize_parser = subcommands.add_parser("kit-organize")
+    from kituniverse_harness.kit_organize import configure_parser as configure_kit_organize_parser
+
+    configure_kit_organize_parser(kit_organize_parser)
     guided_parser = subcommands.add_parser("guided-kit-builder")
     from workflow_harnesses.guided_kit_builder.workflow_guided_kit_builder import (
         configure_parser as configure_guided_kit_parser,
@@ -183,7 +212,7 @@ def _build_guided_parser(prog: str) -> argparse.ArgumentParser:
 def _looks_like_guided_hero_command(argv: list[str]) -> bool:
     if not argv:
         return False
-    known_commands = {"ask-provider", "chain-ask-for-domain-list", "guided-kit-builder", "batch", "rawg-process", "domain-loop", "rawg-chainstorm", "rawg-matrix-optimize", "rawg-matrix-run", "rawg-matrix-cluster", "rawg-fastlane", "rawg-exhaustive", "serve", "runtime-proof"}
+    known_commands = {"ask-provider", "ask-openrouter", "chain-ask-for-domain-list", "gemma-chain", "ask-codex-luna", "kit-organize", "guided-kit-builder", "batch", "rawg-process", "domain-loop", "rawg-chainstorm", "rawg-matrix-optimize", "rawg-matrix-run", "rawg-matrix-cluster", "rawg-fastlane", "rawg-exhaustive", "serve", "runtime-proof"}
     if argv[0] in known_commands:
         return False
     hero_flags = {
@@ -204,7 +233,7 @@ def _looks_like_guided_hero_command(argv: list[str]) -> bool:
 
 
 def _looks_like_batch_hero_command(argv: list[str]) -> bool:
-    if not argv or argv[0] in {"ask-provider", "chain-ask-for-domain-list", "guided-kit-builder", "batch", "rawg-process", "domain-loop", "rawg-chainstorm", "rawg-matrix-optimize", "rawg-matrix-run", "rawg-matrix-cluster", "rawg-fastlane", "rawg-exhaustive", "serve", "runtime-proof"}:
+    if not argv or argv[0] in {"ask-provider", "ask-openrouter", "chain-ask-for-domain-list", "gemma-chain", "ask-codex-luna", "kit-organize", "guided-kit-builder", "batch", "rawg-process", "domain-loop", "rawg-chainstorm", "rawg-matrix-optimize", "rawg-matrix-run", "rawg-matrix-cluster", "rawg-fastlane", "rawg-exhaustive", "serve", "runtime-proof"}:
         return False
     flags = {argument.split("=", 1)[0] for argument in argv if argument.startswith("--")}
     guided_only = {
@@ -257,6 +286,19 @@ def _add_ask_provider_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--health", action="store_true")
 
 
+def _add_ask_openrouter_args(parser: argparse.ArgumentParser) -> None:
+    from .openrouter_profile import DEFAULT_ENV_PATH, DEFAULT_PROFILE_PATH
+
+    parser.add_argument("prompt", nargs="?")
+    parser.add_argument("--profile", type=Path, default=DEFAULT_PROFILE_PATH)
+    parser.add_argument("--env-file", type=Path, default=DEFAULT_ENV_PATH)
+    parser.add_argument("--system")
+    parser.add_argument("--temperature", type=float)
+    parser.add_argument("--max-tokens", type=int)
+    parser.add_argument("--health", action="store_true")
+    parser.add_argument("--text", action="store_true")
+
+
 def _add_chain_args(parser: argparse.ArgumentParser) -> None:
     _add_provider_common_args(parser)
     parser.add_argument(
@@ -290,6 +332,40 @@ def _run_ask_provider(args: argparse.Namespace) -> int:
     return 0 if response.ok else 1
 
 
+def _run_ask_openrouter(args: argparse.Namespace) -> int:
+    from .openrouter_profile import (
+        OpenRouterProfileError,
+        ask_openrouter,
+        profile_health,
+    )
+
+    try:
+        if args.health:
+            health = profile_health(args.profile, args.env_file)
+            print(json.dumps(health, indent=2, sort_keys=True))
+            if args.prompt is None:
+                return 0 if health["ok"] else 1
+        if args.prompt is None:
+            print("ask-openrouter requires a prompt unless --health is used", file=sys.stderr)
+            return 2
+        report = ask_openrouter(
+            args.prompt,
+            profile_path=args.profile,
+            env_path=args.env_file,
+            system=args.system,
+            temperature=args.temperature,
+            max_tokens=args.max_tokens,
+        )
+    except OpenRouterProfileError as exc:
+        print(json.dumps({"ok": False, "error": str(exc)}, indent=2), file=sys.stderr)
+        return 2
+    if args.text and report["ok"]:
+        print(report["content"])
+    else:
+        print(json.dumps(report, indent=2, sort_keys=True))
+    return 0 if report["ok"] else 1
+
+
 def _run_chain(args: argparse.Namespace) -> int:
     report = run_chain_ask_for_domain_list(
         ChainConfig(
@@ -305,6 +381,24 @@ def _run_chain(args: argparse.Namespace) -> int:
     )
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0 if report["ok"] else 1
+
+
+def _run_gemma_chain(args: argparse.Namespace) -> int:
+    from workflow_harnesses.gemma.chain_harness.workflow import run_from_namespace
+
+    return run_from_namespace(args)
+
+
+def _run_ask_codex_luna(args: argparse.Namespace) -> int:
+    from workflow_harnesses.gemma.chain_harness.codex_endpoint import run_from_namespace
+
+    return run_from_namespace(args)
+
+
+def _run_kit_organize(args: argparse.Namespace) -> int:
+    from kituniverse_harness.kit_organize import run_from_namespace
+
+    return run_from_namespace(args)
 
 
 def _run_guided(args: argparse.Namespace) -> int:
